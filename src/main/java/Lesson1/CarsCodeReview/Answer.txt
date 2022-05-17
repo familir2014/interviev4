@@ -1,0 +1,106 @@
+2.	Описать ошибки в коде и предложить варианты оптимизации:
+
+interface Moveable {
+    void move();
+}
+
+interface Stopable {
+    void stop();
+}
+
+interface Openable {
+    void stop();
+}
+
+abstract class Car implements Openable {
+    public Engine engine; // нарушен принцип инкапсуляции, сделать поле private (или protected), изменения через сеттер
+                          // класс Engine не реализован
+    private String color;
+    private String name;
+
+    // ограничение области видимости метода (protected): либо сделать метод start() публичным, либо
+    // у наследников создавать публичный метод, использующий родительский start()
+    protected void start() {
+        System.out.println("Car starting");
+    }
+
+    // вынести в отдельный интерфейс (SOLID - Interface segregation principle)
+    // abstract void open();
+
+    public Engine getEngine() {
+        return engine;
+    }
+
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// реализация класса Engine
+public class Engine {
+    // something goes here
+}
+
+class LightWeightCar extends Car implements Moveable {
+
+    @Override
+    void open() {
+        System.out.println("Car is open");
+    }
+
+    @Override
+    public void move() {
+        System.out.println("Car is moving");
+    }
+
+    // расширение видимости метода родительского класса - public
+    @Override
+    public void start() {
+        super.start();
+    }
+}
+
+// класс Lorry наследуется от абстрактного класса Car и реализует интерфейсы Moveable, Stopable (не указано "implements")
+class Lorry extends Car implements Moveable, Stopable {
+
+    // расширение видимости метода родительского класса - public
+    @Override
+    public void start() {
+        super.start();
+    }
+
+    // не указана аннотация @Override (это не обязательно, но улучшает стилистику кода, а также
+    // при изменении интерфейса компилятор сообщит об ошибке
+    @Override
+    public void move(){
+        System.out.println("Car is moving");
+    }
+
+    @Override
+    public void stop(){
+        System.out.println("Car is stop");
+    }
+
+    // не реализован абстрактный метод "open"
+    @Override
+    void open() {
+
+    }
+
+}
